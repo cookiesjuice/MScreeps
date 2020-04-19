@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MScreeps</string>
+    <string name="enter_token">请输入你的Auth Token</string>
+    <string name="token_text">Auth Token</string>
+    <string name="save_token">保存</string>
+    <string name="done_token">完成</string>
+    <string name="enter_token_help">如需帮助请查阅 https://docs.screeps.com/auth-tokens.html。</string>
+    <string name="shard_selection">选择Shard</string>
+    <string name="tab0">总览</string>
+    <string name="tab1">控制台</string>
+    <string name="setting">设定</string>
+    <string name="console_prompt">></string>
+    <string name="test">测试</string>
+    <string name="help">帮助</string>
+    <string name="loading">加载中...</string>
+    <string name="no_data">（无数据）</string>
+</resources>
