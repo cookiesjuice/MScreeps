@@ -1,9 +1,4 @@
 
-plugins {
-    id 'org.springframework.boot' version '2.2.2.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
-}
-
 apply plugin: 'com.android.application'
 
 repositories {
@@ -14,18 +9,6 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
-    packagingOptions{
-        exclude 'META-INF/spring.tooling'
-        exclude 'META-INF/spring.handlers'
-        exclude 'META-INF/spring-configuration-metadata.json'
-        exclude 'META-INF/spring.factories'
-        exclude 'META-INF/license.txt'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/web-fragment.xml'
-        exclude 'META-INF/additional-spring-configuration-metadata.json'
-        exclude 'META-INF/spring.schemas'
-        exclude 'META-INF/notice.txt'
-    }
 
     defaultConfig {
         applicationId "com.cookiesjuice.mscreeps"
@@ -60,10 +43,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.android.material:material:1.0.0'
 
-    implementation 'org.springframework.boot:spring-boot-starter-websocket'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-    implementation 'org.webjars:sockjs-client:1.0.2'
 
 }

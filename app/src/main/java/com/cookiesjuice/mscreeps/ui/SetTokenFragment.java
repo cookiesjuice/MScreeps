@@ -18,7 +18,7 @@ import com.cookiesjuice.mscreeps.HttpClient;
 import com.cookiesjuice.mscreeps.MainActivity;
 import com.cookiesjuice.mscreeps.Manager;
 import com.cookiesjuice.mscreeps.R;
-import com.cookiesjuice.mscreeps.SocketClient;
+//import com.cookiesjuice.mscreeps.SocketClient;
 
 import java.util.Objects;
 
@@ -27,7 +27,7 @@ public class SetTokenFragment extends Fragment {
     public SetTokenFragment(@NonNull MainActivity activity){
         this.activity = activity;
     }
-    private final boolean testing = true;
+    private final boolean testing = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceBundle){
