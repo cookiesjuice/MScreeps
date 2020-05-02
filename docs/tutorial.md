@@ -273,17 +273,197 @@ users是一个object，其中的格式是
 
 ### 5. 用户信息
 
-今天懒了
+#### 自己的账户信息
+- [GET] `https://screeps.com/api/auth/me`
+
+**返回的数据**:
+```
+{
+  ok: 1,
+  _id: <你自己的id>,
+  email: <你注册的email地址>,
+  username: <你的用户名>,
+  cpu: <你的cpu上限>,
+  badge: <你的头像>,
+  password: <如果用auth token登陆为false，用户名密码登陆为true>,
+  lastRespawnDate: <上一次respawn的时间>,
+  notifyPrefs: <邮件通知的设置>,
+  gcl: <总的GCL能量>,
+  credit: <我也不知道是什么>,
+  promoPeriodUntil: <应该是sub过期的时间>,
+  money: <你的credit>,
+  subscriptionTokens: <你账户里的subscription token数量>,
+  cpuShard: <你每个shard分配的CPU>,
+  cpuShardUpdatedTime: <你上次更新CPU shard的时间>,
+  runtime: <我也不知道>,
+  powerExperimentations: <剩下的power experimentation次数>,
+  powerExperimentationsTime: <应该是experimentation结束的时间>,
+  github: <你绑定的github账户和设置>,
+  steam: <你绑定的steam账户和设置>,
+  twitter: <你绑定的twitter账户和设置（虽然我不知道在哪里绑定）>
+}
+```
+注意这个请求不会返回新的X-Token（返回的X-Token是空字符串）
+
+#### 查询用户信息
+- [GET] `https://screeps.com/api/user/find?[username=<username>][id=<userid>]`
+- 注意 `username` 和 `id` 选择一个参数用于查询
+
+**返回的数据**:
+```
+{
+  ok:
+  user:{
+    _id: <对方的id>,
+    username: <对方的用户名>,
+    badge: <对方的头像>
+  }
+}
+```
+这个请求不需要登陆验证，也不会返回X-Token。
+
+这里得到的id就是很多请求中使用的用户id。
+
+#### 查询用户房间
+- [GET] `https://screeps.com/api/user/rooms?id=<用户的id>`
+
+**返回的数据**:
+```
+{
+  ok: 1,
+  shards: {
+    shard0: <shard0的房间名array>,
+    shard1: <shard1的房间名array>,
+    ...
+  }
+}
+```
+这个请求不需要登陆验证，也不会返回X-Token
+
+
+#### 用户总览
+获得自己的总览界面
+- [GET] `https://screeps.com/api/user/overview?interval=<interval>&statName=<statName>`
+- interval是8，180或者1440，分别代表1小时，24小时和7天。
+- statName可以是`creepsLost`, `creepsProduced`, `energyConstruction`, `energyControl`, `energyCreeps`, `energyHarvested`, `powerProduced`
+
+**返回的数据**:
+```
+{
+  ok: 1,
+  statsMax: <我也不知道,可能是全服务器最大的数据用来决定画圈的大小>,
+  totals: {<所有的统计数据>},
+  shards: {
+    <shardName>: {
+       rooms: <你的所有房间>,
+       stats: <每个房间的数据>,
+       gametimes: <我也不知道是什么>
+    }
+  },
+}
+```
+
+#### 杂项
+这些可能用的比较少，我就放在一起，也不具体介绍，如果有需要自己试试就知道了。
+- [GET] `https://screeps.com/api/user/respawn-prohibited-rooms`
+- [GET] `https://screeps.com/api/user/world-status`
+- [GET] `https://screeps.com/api/user/world-start-room`
+- [GET] `https://screeps.com/api/xsolla/user`
+
 
 ### 6. Console
+HTTP指令只能发送到console的命令，不能接收。接收需要通过websocket，会在之后介绍。
+- [POST] `https://screeps.com/api/user/console`
+
+**发送的数据**：
+```
+{
+  expression: <指令>，
+  shard: <shardName>
+}
+```
+
+**接收的数据**：
+```
+{
+  ok: 1,
+  result: {
+    ok: 1,
+    n: <我也不知道是什么，但是通常是1>
+  }
+  ops: [
+    {
+      user: <user id>,
+      expression: <你发送的指令>,
+      shard: <shardName>,
+      _id: <指令的id?>
+    }
+  ],
+  insertedCount: <??>,
+  insertedIds: [<??>]
+}
+```
+接收的数据似乎也没什么用，只能用来确认自己发送成功。
 
 
 ### 7. Memory
+#### 读Memory
+- [GET] `https://screeps.com/api/user/memory?shard=<shardName>[&path=<要访问的Memory路径>]`
+- 访问的路径是Memory之后的，比如rooms.E1N1
 
+**返回的数据**：
+```
+{
+  ok: 1,
+  data:<Memory的内容>
+}
+```
+这个内容是以 `gz:` 开头的，base64编码之后的gzip之后的Memory的数据。要重新变回JSON需要先base64解码然后gzip解压。
+
+#### 写Memory
+-[POST] `https://screeps.com/api/user/memory`
+**发送的数据**：
+```
+{
+  path: <要修改的Memory的路径>,
+  value: <修改之后的值>,
+  shard: <shardName>
+}
+```
+- 如果没有path参数，会修改整个Memory
+- 如果没有value参数，会清空这一部分Memory
+- 所以这两个参数都没有就是清空整个Memory
+
+**接收的数据**：
+和console的接受数据基本上一样，只是`ops`当中的 `_id` 变成 `hidden` 。可能修改Memory相当于一个console指令。
+
+#### 读Segment
+- [GET] `https://screeps.com/api/user/memory-segment?segment=<segment编号(0-99)>&shard=<shardName>`
+**接收的数据**：
+格式和Memory完全相同
+
+#### 写segment
+- [POST] `https://screeps.com/api/user/memory-segment`
+
+**发送的数据**：
+```
+{
+  segment: <segment编号(0-99)>,
+  data: <要写的数据>,
+  shard: <shardName>
+}
+```
+**接收的数据**:
+```
+{
+  ok: 1
+}
+```
 
 ### 8. 对游戏对象的操作
 #### Add Intent
 包括删除flag，自杀Creep，删除ConstructionSite，unclaim controller，删除Structure (不确定其他intent是否可以)
+都下次再写了。
 
 #### ...
 
